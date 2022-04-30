@@ -1,0 +1,433 @@
+on join:
+    if {FirstJoin::%uuid of player%} is not set:
+        FirstJoin(player)
+
+function FirstJoin(p: player):
+    set {_uuid} to uuid of {_p}
+    set {FirstJoin::%{_uuid}%} to true
+    teleport {_p} to {Spawn}
+    if {taso::%{_p}'s uuid%} is not set:
+        set {taso::%{_p}'s uuid%} to 0
+    if {kuolemat::%{_p}'s uuid%} is not set:
+        set {kuolemat::%{_p}'s uuid%} to 0
+    if {Tappoputki::%{_p}'s uuid%} is not set:
+        set {Tappoputki::%{_p}'s uuid%} to 0
+    if {Raha::%{_p}'s uuid%} is not set:
+        set {Raha::%{_p}'s uuid%} to 0
+    if {Parastappoputki::%{_p}'s uuid%} is not set:
+        set {ParasTappoputki::%{_p}'s uuid%} to 0
+    if {tapot::%{_p}'s uuid%} is not set:
+        set {tapot::%{_p}'s uuid%} to 0
+
+
+options:
+    p: &8[ &4&lKitPvP&8 ]
+
+on join:
+    teleport player to {Spawn}
+
+command /Kitpvp [<text>] [<text>] [<text>] [<number>] [<offline player>]:
+    aliases: kp
+    permission: Kitpvp.admin
+    trigger:
+        if arg-1 is not set:
+            send "&c--------------- {@p} &c---------------"
+            send "&eTekijät: IgnKung, IgnSorse"
+            send "&eVersio: Beta 2.0"
+            send " "
+            send "&c&lKomennot apuun:"
+            send "&e/kpa luo kartta kaupunki/tempeli"
+            send "&e/kpa luo spawn"
+            send "&e/kpa scoret set raha/tappoputki/kuolemat"
+            send "&e/tapot/parastappotputki/taso [pelaaja]"
+            send "&c--------------- {@p} &c---------------"
+        arg-1 is "luo":
+            arg-2 is "kartta":
+                arg-3 is "Kaupunki":
+                    send "{@p}: &7Olet asetanut kartan &cKaupunki" to player
+                    set {Kaupunki} to location of player
+                arg-3 is "tempeli":
+                    send "{@p}: &7Olet asetanut kartan &cTempeli" to player
+                    set {Tempeli} to location of player
+            arg-2 is "spawn":
+                set {Spawn} to location of player
+                send "{@p}: &7Olet asetanut spawnin kohtaan: &c%{Spawn}%" to player
+        arg-1 is "scoret":
+            arg-2 is "set":
+                arg-3 is "raha":
+                    set {Raha::%arg-5's uuid%} to arg-4
+                arg-3 is "tappoputki":
+                    set {tappoputki::%arg-5's uuid%} to arg-4
+                arg-3 is "kuolemat":
+                    set {kuolemat::%arg-5's uuid%} to arg-4
+                arg-3 is "tapot":
+                    set {tapot::%arg-5's uuid%} to arg-4
+                arg-3 is "parastappoputki":
+                    set {parastappoputki::%arg-5's uuid%} to arg-4
+                arg-3 is "taso":
+                    set {taso::%arg-5's uuid%} to arg-4
+
+command /tilastot:
+    aliases: stats
+    trigger:
+        send "&c--------------- {@p} &c---------------"
+        send " "
+        send "&7Tapot: &6%{tapot::%player's uuid%}%"
+        send " "
+        send "&7Kuolemat: &6%{kuolemat::%player's uuid%}%"
+        send " "
+        send "&7Taso: &6%{taso::%player's uuid%}%"
+        send " "
+        send "&7Parastappoputki: &6%{parastappoputki::%player's uuid%}%"
+        send " "
+        send "&7Raha: &6%{Raha::%player's uuid%}%"
+        send " "
+        send "&c--------------- {@p} &c---------------"
+
+on hunger meter change:
+    cancel event
+
+on join:
+    teleport player to {Spawn}
+    clear player's inventory
+    if {taso::%player's uuid%} is not set:
+        set {taso::%player's uuid%} to 0
+    if {kuolemat::%player's uuid%} is not set:
+        set {kuolemat::%player's uuid%} to 0
+    if {Tappoputki::%player's uuid%} is not set:
+        set {Tappoputki::%player's uuid%} to 0
+    if {Raha::%player's uuid%} is not set:
+        set {Raha::%player's uuid%} to 0
+    if {Parastappoputki::%player's uuid%} is not set:
+        set {ParasTappoputki::%player's uuid%} to 0
+    if {tapot::%player's uuid%} is not set:
+        set {tapot::%player's uuid%} to 0
+
+on item damage:
+    cancel event
+
+on join:
+	set title of player's scoreboard to "&4&lKitPvP &e&lBeta"
+	set line 12 of player's scoreboard to " "
+	set line 11 of player's scoreboard to "&7Paikalla: &6%{online}%"
+	set line 10 of player's scoreboard to " "
+	set line 9 of player's scoreboard to "&6&lTilastot"
+	set line 8 of player's scoreboard to " "
+	set line 7 of player's scoreboard to "&7Pelaaja: &6%player%"
+	set line 6 of player's scoreboard to "&7Tapot: &6%{tapot::%player's uuid%}%"
+	set line 5 of player's scoreboard to "&7Kuolemat: &6%{kuolemat::%player's uuid%}%"
+	set line 4 of player's scoreboard to "&7Tappoputki: &6%{tappoputki::%player's uuid%}%"
+	set line 3 of player's scoreboard to "&7Raha: &6%{Raha::%player's uuid%}%"
+	set line 2 of player's scoreboard to " "
+	set line 1 of player's scoreboard to "&cSorsaCraft.com"
+
+	while player is online:
+		set line 11 of player's scoreboard to "&7Paikalla: &6%{online}%"
+		set line 6 of player's scoreboard to "&7Tapot: &6%{tapot::%player's uuid%}%"
+		set line 5 of player's scoreboard to "&7Kuolemat: &6%{kuolemat::%player's uuid%}%"
+		set line 4 of player's scoreboard to "&7Tappoputki: &6%{tappoputki::%player's uuid%}%"
+		set line 3 of player's scoreboard to "&7Raha: &6%{Raha::%player's uuid%}%"
+		wait 1 tick     
+
+options:
+    header: %nl %&4&lKitPvP &e&lBeta &7(%{online}%/120) %nl%
+    footer: %nl%&7Nettisivut: &6SorsaCraft.com %nl% &7Kauppa: &6Tulossa pian %nl%
+
+every tick:
+  loop all players:
+    set loop-players's tab list header to "{@header}"
+    set loop-players's tab list footer to "{@footer}"
+    set {online} to number of all players
+    stop
+
+command /npc [<entity type>] [<text>]:
+    trigger:
+        spawn arg-1 at location of player
+        set name of last spawned entity to coloured arg-2
+        add "{NoAI:1}" to nbt of last spawned entity
+        add "{Silent:1}" to nbt of last spawned entity
+        add "{Invulnerable:1}" to nbt of last spawned entity
+
+#Tappo palkinnot ja tappo lisäys
+
+
+on death:
+    broadcast "{@p} &7Pelaaja &6%attacker% &7tappoi pelaajan &6%victim%"
+    add 1 to {kuolemat::%victim's uuid%}
+    set {tappoputki::%victim's uuid%} to 0
+
+on death:
+    add 1 to {tapot::%attacker's uuid%}
+    add 10 to {Raha::%attacker's uuid%}
+    add 1 to {tappoputki::%attacker's uuid%}
+    add 1 to {parastappoputki::%attacker's uuid%}
+    if {tapot::%attacker's uuid%} is 10:
+        add 1 to {taso::%attacker's uuid%}
+        broadcast "{@p} &6%attacker% &7Pääsi tasolle 1!"
+    if {tapot::%attacker's uuid%} is 20:
+        add 1 to {taso::%attacker's uuid%}
+        broadcast "{@p} &6%attacker% &7Pääsi tasolle 2!"
+    if {tapot::%attacker's uuid%} is 30:
+        add 1 to {taso::%attacker's uuid%}
+        broadcast "{@p} &6%attacker% &7Pääsi tasolle 3!"
+    if {tapot::%attacker's uuid%} is 40:
+        add 1 to {taso::%attacker's uuid%}
+        broadcast "{@p} &6%attacker% &7Pääsi tasolle 4!"
+    if {tapot::%attacker's uuid%} is 50:
+        add 1 to {taso::%attacker's uuid%}
+        broadcast "{@p} &6%attacker% &7Pääsi tasolle 5!"
+    if {tapot::%attacker's uuid%} is 60:
+        add 1 to {taso::%attacker's uuid%}
+        broadcast "{@p} &6%attacker% &7Pääsi tasolle 6!"
+    if {tapot::%attacker's uuid%} is 70:
+        add 1 to {taso::%attacker's uuid%}
+        broadcast "{@p} &6%attacker% &7Pääsi tasolle 7!"
+    if {tapot::%attacker's uuid%} is 80:
+        add 1 to {taso::%attacker's uuid%}
+        broadcast "{@p} &6%attacker% &7Pääsi tasolle 8!"
+    if {tapot::%attacker's uuid%} is 90:
+        add 1 to {taso::%attacker's uuid%}
+        broadcast "{@p} &6%attacker% &7Pääsi tasolle 9!"
+    if {tapot::%attacker's uuid%} is 100:
+        add 1 to {taso::%attacker's uuid%}
+        broadcast "{@p} &6%attacker% &7Pääsi tasolle 10!"
+    if {tapot::%attacker's uuid%} is 110:
+        add 1 to {taso::%attacker's uuid%}
+        broadcast "{@p} &6%attacker% &7Pääsi tasolle 11!"
+    if {tapot::%attacker's uuid%} is 120:
+        add 1 to {taso::%attacker's uuid%}
+        broadcast "{@p} &6%attacker% &7Pääsi tasolle 12!"
+    if {tapot::%attacker's uuid%} is 130:
+        add 1 to {taso::%attacker's uuid%}
+        broadcast "{@p} &6%attacker% &7Pääsi tasolle 13!"
+    if {tapot::%attacker's uuid%} is 140:
+        add 1 to {taso::%attacker's uuid%}
+        broadcast "{@p} &6%attacker% &7Pääsi tasolle 14!"
+    if {tapot::%attacker's uuid%} is 150:
+        add 1 to {taso::%attacker's uuid%}
+        broadcast "{@p} &6%attacker% &7Pääsi tasolle 15!"
+    if {tapot::%attacker's uuid%} is 160:
+        add 1 to {taso::%attacker's uuid%}
+        broadcast "{@p} &6%attacker% &7Pääsi tasolle 16!"
+    if {tapot::%attacker's uuid%} is 170:
+        add 1 to {taso::%attacker's uuid%}
+        broadcast "{@p} &6%attacker% &7Pääsi tasolle 17!"
+    if {tapot::%attacker's uuid%} is 180:
+        add 1 to {taso::%attacker's uuid%}
+        broadcast "{@p} &6%attacker% &7Pääsi tasolle 18!"
+    if {tapot::%attacker's uuid%} is 190:
+        add 1 to {taso::%attacker's uuid%}
+        broadcast "{@p} &6%attacker% &7Pääsi tasolle 19!"
+    if {tapot::%attacker's uuid%} is 200:
+        add 1 to {taso::%attacker's uuid%}
+        broadcast "{@p} &6%attacker% &7Pääsi tasolle 20!"
+
+#Kitit
+
+command /^^**^7hjrfge47y368r4efh:
+    trigger:
+        KIT(player)
+
+function KIT(p: Player):
+    create gui with virtual chest inventory with 1 rows named "&6&lKitit":
+        format gui slot 0 with wooden sword named "&fPerus Kitit" with all flags hidden:
+            PerusKit(player)
+        format gui slot 2 with stone sword named "&fMaksulliset kitit" with lore " " and "&7Tulossa pian" and "&7ei varmaan tulossa beta 1" with all flags hidden
+        format gui slot 6 with chest named "&fKauppa" with all flags hidden:
+            Kauppa(player)
+        format gui slot 8 with diamond sword named "&b&lVIP Kitit" with lore " " and "&b/kauppa" with all flags hidden:
+            if {_p} has permission "sorsa.vip":
+                send "{@p} &7Tulossa pian"
+    open last gui for {_p}
+
+function PerusKit(p: Player):
+    create gui with virtual chest inventory with 1 rows named "&f&lPerus kitit":
+        format gui slot 3 with iron sword named "&7Ritari" with all flags hidden:
+            clear {_p}'s inventory
+            give 1 of Iron Sword to {_p}
+            give 1 of Shield to {_p}
+            give 32 of golden apple to {_p}
+            set {_p}'s helmet to chainmail helmet
+            set {_p}'s chestplate to iron chestplate
+            set {_p}'s leggings to chainmail leggings
+            set {_p}'s boots to chainmail boots
+        format gui slot 4 with bow named "&7Jousimies" with all flags hidden:
+            clear {_p}'s inventory
+            give 1 of Stone Sword to {_p}
+            give 1 of bow of infinity to {_p}
+            give 32 of golden apple to {_p}
+            give 1 of arrow to {_p}
+            set {_p}'s helmet to chainmail helmet
+            set {_p}'s chestplate to leather tunic
+            set {_p}'s leggings to chainmail leggings
+            set {_p}'s boots to chainmail boots
+        format gui slot 5 with Stone Axe named "&7Kääpiö" with all flags hidden:
+            clear {_p}'s inventory
+            give 1 of iron axe to {_p}
+            give 1 of fishing rod to {_p}
+            give 32 of golden apple to {_p}
+            set {_p}'s helmet to chainmail helmet
+            set {_p}'s chestplate to chainmail chestplate
+            set {_p}'s leggings to leather pants
+            set {_p}'s boots to leather boots
+    open last gui for {_p}
+
+function Kauppa(p: player):
+    create gui with virtual chest inventory with 1 rows named "&f&lKauppa":
+        format gui slot 0 with diamond sword named "&7Asekauppa" with all flags hidden:
+            TaseKauppa(player)
+        format gui slot 2 with golden apple named "&7Ruokakauppa" with all flags hidden:
+            ruokaKauppa(player)
+        format gui slot 6 with potion of healing named "&7Tehostekauppa" with all flags hidden:
+            tehosteKauppa(player)
+        format gui slot 8 with iron chestplate named "&7Tulossa pian" with all flags hidden    
+    open last gui for {_p}  
+
+function ruokaKauppa(p: player):
+    create gui with virtual chest inventory with 1 rows named "&f&lRuokaKauppa":
+        format gui slot 0 with golden apple with lore "&7Maksaa: &6100€" with all flags hidden:
+            if {Raha::%player's uuid%} >= 100:
+                remove 100 from {Raha::%player's uuid%}
+                give 1 of golden apple to {_p}
+                send "{@p} &7Ostit &cKultaisen omenan"
+            else:
+                send "{@p} &7Rahasi ei riitä"
+        format gui slot 1 with enchanted golden apple with lore "&7Maksaa: &61000€" with all flags hidden:
+            if {Raha::%player's uuid%} >= 1000:
+                remove 1000 from {Raha::%player's uuid%}
+                give 1 of enchanted golden apple to {_p}
+                send "{@p} &7Ostit &cLuomotun kultaisen omenan"
+            else:
+                send "{@p} &7Rahasi ei riitä"
+        format gui slot 2 with golden carrot with lore "&7Maksaa: &630€" with all flags hidden:
+            if {Raha::%player's uuid%} >= 30:
+                remove 30 from {Raha::%player's uuid%}
+                give 1 of golden carrot to {_p}
+                send "{@p} &7Ostit &cKultaisen porkannan"
+            else:
+                send "{@p} &7Rahasi ei riitä"
+    open last gui for {_p}
+        
+function TaseKauppa(p: player):       
+    create gui with virtual chest inventory with 1 rows named "&f&lAsekauppa":    
+        format gui slot 0 with stick named "Kb tikku" with lore "&7Maksaa: &6900€" and "&7enchantit: &2knocback 2" with all flags hidden:
+            if {Raha::%player's uuid%} >= 900:
+                remove 900 from {Raha::%player's uuid%}
+                give 1 of stick of knockback 2 to {_p}
+                send "{@p} &7Ostit &cKb tikun"
+            else:
+                send "{@p} &7Rahasi ei riitä"
+        format gui slot 1 with iron sword with lore "&7Maksaa: &61000€" and "&7enchantit: &2Sharpness 3" with all flags hidden:
+            if {Raha::%player's uuid%} >= 1000:
+                remove 1000 from {Raha::%player's uuid%}
+                give 1 of iron sword of sharpness 3 to {_p}
+                send "{@p} &7Ostit &cRauta miekan"
+            else:
+                send "{@p} &7Rahasi ei riitä"
+        format gui slot 2 with diamond sword with lore "&7Maksaa: &62600€" and "&7enchantit: &2Sharpness 2" with all flags hidden:
+            if {Raha::%player's uuid%} >= 2600:
+                remove 2600 from {Raha::%player's uuid%}
+                give 1 of diamond sword of sharpness 2 to {_p}
+                send "{@p} &7Ostit &cTimantti miekan"
+            else:
+                send "{@p} &7Rahasi ei riitä"
+    open last gui for {_p}  
+
+function tehosteKauppa(p: player):
+    create gui with virtual chest inventory with 1 rows named "&f&lTehoste kauppa":
+        format gui slot 0 with lingering Potion of Swiftness named "&3Nopeus" with lore "&7Maksaa: &6900€" with all flags hidden:
+            if {Raha::%player's uuid%} >= 900:
+                remove 900 from {Raha::%player's uuid%}
+                execute command "/effect clear %{_p}% minecraft:speed"
+                execute command "/effect give %{_p}% minecraft:speed 200 2"
+                send "{@p} &7Ostit tehosteen &cNopeus"
+            else:
+                send "{@p} &7Rahasi ei riitä"
+        format gui slot 1 with potion of leaping named "&aHyppy boosti" with lore "&7Maksaa: &6900€" with all flags hidden:
+            if {Raha::%player's uuid%} >= 900:
+                remove 900 from {Raha::%player's uuid%}
+                execute command "/effect clear %{_p}% minecraft:jump_boost"
+                execute command "/effect give %{_p}% minecraft:jump_boost 200 2"
+                send "{@p} &7Ostit tehosteen &cHyppy boosti"
+            else:
+                send "{@p} &7Rahasi ei riitä"
+        format gui slot 7 with potion of healing named "&cElpyminen" with lore "&7Maksaa: &6900€" with all flags hidden:
+            if {Raha::%player's uuid%} >= 900:
+                remove 900 from {Raha::%player's uuid%}
+                execute command "/effect clear %{_p}% minecraft:regeneration"
+                execute command "/effect give %{_p}% minecraft:regeneration 200 2"
+                send "{@p} &7Ostit tehosteen &cElpyminen"
+            else:
+                send "{@p} &7Rahasi ei riitä"
+        format gui slot 8 with potion of strength named "&7Voimakuus" with lore "&7Maksaa: &66000€" with all flags hidden:
+            if {Raha::%player's uuid%} >= 6000:
+                remove 6000 from {Raha::%player's uuid%}
+                execute command "/effect clear %{_p}% minecraft:strength"
+                execute command "/effect give %{_p}% minecraft:strength 200 2"
+                send "{@p} &7Ostit Tehosteen &cVoimakuus"
+            else:
+                send "{@p} &7Rahasi ei riitä"
+    open last gui for {_p}  
+
+function VipKit(p: Player):
+    create gui with virtual chest inventory with 1 rows named "&f&lVip kitit":
+        format gui slot 3 with iron sword named "&7SorsaSotilas" with all flags hidden:
+            if {_p} has permission "Sorsa+":
+                clear {_p}'s inventory
+        format gui slot 4 with bow named "&7SorsaLayer" with all flags hidden:
+            if {_p} has permission "Sorsapro":    
+                clear {_p}'s inventory
+        format gui slot 5 with Stone Axe named "&7SorsaTankki" with all flags hidden:
+            if {_p} has permission "Sorsamaster":  
+                clear {_p}'s inventory
+    open last gui for {_p}
+
+#Reset
+
+command /reset <offline player>:
+    permission: Op
+    trigger:
+        set {kuolemat::%arg-1's uuid%} to 0
+        set {taso::%arg-1's uuid%} to 0
+        set {parastappoputki::%arg-1's uuid%} to 0
+        set {Raha::%arg-1's uuid%} to 0
+        set {tapot::%arg-1's uuid%} to 0
+        teleport arg-1 to {Spawn}
+
+command /kaupunki:
+    trigger:
+        teleport player to {Kaupunki}
+
+command /spawn:
+    trigger:
+        clear player's inventory
+        teleport player to {Spawn}
+        set slot 0 of player to skull of ("%player%" parsed as offline player) named "&cMinun profiili"
+
+on place a player head:
+    cancel event
+
+on inventory click a player head:
+    cancel event
+
+on drop a player head:
+    cancel event
+
+command /siirrärahaa [<number>] [<player>]:
+    trigger:
+        add arg-1 to {raha::%uuid of arg-2%}
+        remove arg-1 from {Raha::%player's uuid%}
+        send "{@p} &7Siirsit pelajalle %arg-2% Rahaa &6%arg-1%" 
+
+function Top5Tapot(p: player):
+    set {_top::*} to sorted indices of {tapot::*} in descending order
+    loop 5 times:
+        add {_top::%loop-value%} to {_top5::*}
+    send "&cTop 5 tapot" to {_p}
+    loop {_top5::*}:
+        add 1 to {_n}
+        send "&c&l%{_n}% &6%{_top5::%{_n}%} parsed as offlineplayer% &c%{tapot::%{_top5::%{_n}%}%}%" to {_p}
+
+command /top5:
+    trigger:
+        Top5Tapot(player)
